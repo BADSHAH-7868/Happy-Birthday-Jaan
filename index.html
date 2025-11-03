@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Birthday Envelope</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Kalam:wght@300;400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f2ff 0%, #ffe6f2 50%, #fff2e6 100%);
+            font-family: 'Kalam', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Floating hearts background */
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 182, 193, 0.3);
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .floating-heart:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .floating-heart:nth-child(2) { top: 20%; right: 20%; animation-delay: 1s; }
+        .floating-heart:nth-child(3) { top: 70%; left: 10%; animation-delay: 2s; }
+        .floating-heart:nth-child(4) { top: 60%; right: 15%; animation-delay: 3s; }
+        .floating-heart:nth-child(5) { top: 40%; left: 80%; animation-delay: 4s; }
+        .floating-heart:nth-child(6) { top: 80%; right: 70%; animation-delay: 5s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.6; }
+        }
+        
+        /* Main envelope container */
+        .envelope-container {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: envelopePulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes envelopePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .envelope-container:hover {
+            transform: scale(1.05);
+            animation: none;
+        }
+        
+        /* Envelope back */
+        .envelope-back {
+            width: 400px;
+            height: 280px;
+            background: linear-gradient(135deg, #fff5f5, #ffeef1);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 
+                0 15px 35px rgba(255, 182, 193, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff8fab;
+        }
+        
+        /* Envelope flap */
+        .envelope-flap {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            height: 140px;
+            background: linear-gradient(135deg, #ff8fab, #ffc1cc);
+            clip-path: polygon(0 0, 100% 0, 50% 70%);
+            z-index: 2;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: 50% 0;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 
+                0 5px 15px rgba(255, 107, 157, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .envelope-container:hover .envelope-flap {
+            transform: rotateX(-30deg) translateY(-10px);
+            box-shadow: 
+                0 10px 25px rgba(255, 107, 157, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Wax seal */
+        .wax-seal {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ff006e, #d91656);
+            border-radius: 50%;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                0 5px 15px rgba(255, 0, 110, 0.5),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+            animation: sealGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes sealGlow {
+            from { box-shadow: 0 5px 15px rgba(255, 0, 110, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+            to { box-shadow: 0 5px 20px rgba(255, 0, 110, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.4); }
+        }
+        
+        /* Address text on envelope */
+        .envelope-address {
+            position: absolute;
+            top: 120px;
+            left: 30px;
+            right: 30px;
+            text-align: center;
+            z-index: 1;
+        }
+        
+        .envelope-to {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .envelope-from {
+            font-family: 'Kalam', cursive;
+            font-size: 1em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Instruction text */
+        .instruction {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #ff006e;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            font-weight: 700;
+            animation: bounce 2s ease-in-out infinite;
+            text-shadow: 0 2px 4px rgba(255, 0, 110, 0.2);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        /* Click animation overlay */
+        .click-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.3) 0%, transparent 70%);
+            border-radius: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .envelope-container:hover .click-overlay {
+            opacity: 1;
+            animation: ripple 1.5s ease-out infinite;
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.1; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+        
+        /* Decorative corner elements */
+        .corner-decoration {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #ff8fab;
+            border-radius: 50%;
+            background: rgba(255, 182, 193, 0.2);
+        }
+        
+        .corner-decoration.top-left {
+            top: -20px;
+            left: -20px;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 50% 0 0 50%;
+        }
+        
+        .corner-decoration.top-right {
+            top: -20px;
+            right: -20px;
+            border-left: none;
+            border-bottom: none;
+            border-radius: 0 50% 50% 0;
+        }
+        
+        .corner-decoration.bottom-left {
+            bottom: -20px;
+            left: -20px;
+            border-right: none;
+            border-top: none;
+            border-radius: 50% 0 50% 0;
+        }
+        
+        .corner-decoration.bottom-right {
+            bottom: -20px;
+            right: -20px;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 50% 0 50%;
+        }
+        
+        /* Sparkle effect */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd93d;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .sparkle:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 30%; right: 25%; animation-delay: 0.5s; }
+        .sparkle:nth-child(3) { bottom: 40%; left: 30%; animation-delay: 1s; }
+        .sparkle:nth-child(4) { bottom: 30%; right: 20%; animation-delay: 1.5s; }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .envelope-back {
+                width: 320px;
+                height: 220px;
+            }
+            
+            .envelope-flap {
+                height: 110px;
+            }
+            
+            .wax-seal {
+                top: 60px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .envelope-address {
+                top: 100px;
+                left: 20px;
+                right: 20px;
+            }
+            
+            .envelope-to {
+                font-size: 1.4em;
+            }
+            
+            .envelope-from {
+                font-size: 0.9em;
+            }
+            
+            .instruction {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="floating-heart">💕</div>
+    <div class="floating-heart">💖</div>
+    <div class="floating-heart">💝</div>
+    <div class="floating-heart">🌸</div>
+    <div class="floating-heart">✨</div>
+    <div class="floating-heart">🎈</div>
+    
+    <!-- Sparkles -->
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    
+    <!-- Main envelope -->
+    <div class="envelope-container" onclick="openCard()">
+        <div class="envelope-back">
+            <!-- Decorative corners -->
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            
+            <!-- Address text -->
+            <div class="envelope-address">
+                <div class="envelope-to">To My Lovely Jaaaan</div>
+                <div class="envelope-from">With Love & Birthday Wishes 💕</div>
+            </div>
+            
+            <!-- Click overlay for hover effect -->
+            <div class="click-overlay"></div>
+        </div>
+        
+        <!-- Envelope flap -->
+        <div class="envelope-flap"></div>
+        
+        <!-- Wax seal -->
+        <div class="wax-seal">🎂</div>
+        
+        <!-- Instruction text -->
+        <div class="instruction">Click to Open Your Birthday Surprise! ✨</div>
+    </div>
+    
+    <script>
+        function openCard() {
+            // Add click animation
+            const envelope = document.querySelector('.envelope-container');
+            envelope.style.transform = 'scale(0.95)';
+            
+            // Create opening animation
+            setTimeout(() => {
+                envelope.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                envelope.style.transform = 'scale(1.1) rotateY(15deg)';
+                envelope.style.opacity = '0.8';
+            }, 100);
+            
+            // Navigate to birthday card
+            setTimeout(() => {
+                // Create a smooth fade transition
+                document.body.style.transition = 'opacity 0.5s ease-out';
+                document.body.style.opacity = '0';
+                
+                setTimeout(() => {
+                    window.location.href = 'birthday_card.html';
+                }, 500);
+            }, 800);
+        }
+        
+        // Add subtle sound effect on hover (if browser supports it)
+        document.querySelector('.envelope-container').addEventListener('mouseenter', function() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                // Ignore audio errors
+            }
+        });
+        
+        // Fade in animation on page load
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 1s ease-in';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

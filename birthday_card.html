@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { height:100%; overflow-x:hidden; }
+
+        body {
+            min-height:100vh;
+            background:linear-gradient(135deg,#fef7f0 0%,#fde2e4 100%);
+            font-family:'Kalam',cursive;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            position:relative;
+            opacity:0;
+            transition:opacity 1s ease-in;
+        }
+        body.loaded { opacity:1; }
+
+        /* ---------- Decorative Borders (Responsive) ---------- */
+        .border-decoration {
+            position:fixed;
+            width:100%;
+            height:15px;
+            background:repeating-linear-gradient(90deg,transparent,transparent 12px,#ff6b9d 12px,#ff6b9d 24px);
+            z-index:1;
+            overflow:hidden;
+        }
+        .border-decoration.top    { top:0; clip-path:polygon(0 0,12px 100%,24px 0,36px 100%,48px 0,60px 100%,72px 0,84px 100%,96px 0,108px 100%,120px 0,100% 0); }
+        .border-decoration.bottom { bottom:0; clip-path:polygon(0 100%,12px 0,24px 100%,36px 0,48px 100%,60px 0,72px 100%,84px 0,96px 100%,108px 0,120px 100%,100% 100%); }
+
+        @media (max-width:480px) {
+            .border-decoration { height:10px; }
+            .border-decoration.top    { clip-path:polygon(0 0,8px 100%,16px 0,24px 100%,32px 0,40px 100%,48px 0,100% 0); }
+            .border-decoration.bottom { clip-path:polygon(0 100%,8px 0,16px 100%,24px 0,32px 100%,40px 0,48px 100%,100% 100%); }
+        }
+
+        /* ---------- Background Ribbons (no overflow) ---------- */
+        .background-ribbon {
+            position:absolute;
+            opacity:0.12;
+            pointer-events:none;
+            z-index:1;
+        }
+        .ribbon-1 { top:8%; left:-8%; width:180px; height:260px; background:radial-gradient(ellipse,#ff6b9d 20%,transparent 70%); transform:rotate(-15deg); }
+        .ribbon-2 { top:15%; right:-8%; width:220px; height:180px; background:radial-gradient(ellipse,#ffc1cc 30%,transparent 70%); transform:rotate(25deg); }
+        .ribbon-3 { bottom:8%; left:3%; width:160px; height:220px; background:radial-gradient(ellipse,#ff8fab 25%,transparent 70%); transform:rotate(45deg); }
+
+        /* ---------- Main Card ---------- */
+        .birthday-card {
+            background:#fff;
+            border-radius:25px;
+            border:3px dashed #ff6b9d;
+            box-shadow:0 15px 35px rgba(255,107,157,.2);
+            max-width:460px;
+            width:92%;
+            padding:35px 30px;
+            text-align:center;
+            position:relative;
+            z-index:10;
+            animation:cardFloat 3s ease-in-out infinite;
+        }
+        @keyframes cardFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+        /* ---------- Photo ---------- */
+        .friend-photo-container {
+            width:100%;
+            max-width:300px;
+            height:220px;
+            margin:0 auto 22px;
+            border-radius:18px;
+            overflow:hidden;
+            position:relative;
+            box-shadow:0 10px 30px rgba(255,107,157,.3), inset 0 0 20px rgba(255,255,255,.3);
+            border:3px solid #ff8fab;
+        }
+        .friend-photo { width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+        .friend-photo-container:hover .friend-photo { transform:scale(1.06); }
+
+        .photo-overlay { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+        .heart-float {
+            position:absolute; color:rgba(255,107,157,.8); font-size:15px;
+            animation:heartRise 4s ease-in-out infinite; opacity:0;
+        }
+        .heart-float:nth-child(1){left:10%;animation-delay:0s}
+        .heart-float:nth-child(2){left:30%;animation-delay:1s}
+        .heart-float:nth-child(3){left:50%;animation-delay:2s}
+        .heart-float:nth-child(4){left:70%;animation-delay:3s}
+        .heart-float:nth-child(5){left:90%;animation-delay:.5s}
+        @keyframes heartRise{
+            0%{bottom:-20px;opacity:0;transform:scale(.5)}
+            20%{opacity:1;transform:scale(1)}
+            80%{opacity:1}
+            100%{bottom:120%;opacity:0;transform:scale(.5)}
+        }
+
+        /* ---------- Typography ---------- */
+        .main-title { font-family:'Dancing Script',cursive; font-size:3.2em; color:#ff006e; margin-bottom:8px; text-shadow:2px 2px 4px rgba(255,107,157,.3); }
+        .subtitle { font-size:1.2em; color:#666; margin-bottom:20px; font-weight:300; }
+        .birthday-message { font-size:1.05em; color:#333; line-height:1.6; margin-bottom:28px; text-align:left; padding:0 8px; }
+        .birthday-message p { margin-bottom:13px; }
+        .special-text { font-weight:700; color:#ff006e; font-size:1.18em; }
+
+        /* ---------- Buttons ---------- */
+        .button-container { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        .birthday-button {
+            background:linear-gradient(135deg,#ff8fab,#ff6b9d);
+            color:#fff; border:none; border-radius:25px;
+            padding:11px 22px; font-size:1.05em; font-family:'Kalam',cursive;
+            cursor:pointer; box-shadow:0 5px 15px rgba(255,107,157,.4);
+            transition:all .3s; position:relative; overflow:hidden;
+        }
+        .birthday-button:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(255,107,157,.6); }
+        .birthday-button::before{
+            content:''; position:absolute; top:50%; left:50%;
+            width:0;height:0; background:rgba(255,255,255,.3);
+            border-radius:50%; transition:all .3s; transform:translate(-50%,-50%);
+        }
+        .birthday-button:hover::before{ width:300px; height:300px; }
+
+        /* ---------- Back & Music Controls ---------- */
+        .back-button, .music-control {
+            position:fixed; border:none; border-radius:50%;
+            width:50px; height:50px; cursor:pointer;
+            box-shadow:0 5px 15px rgba(255,107,157,.4);
+            transition:all .3s; z-index:100;
+            display:flex; justify-content:center; align-items:center;
+        }
+        .back-button { top:20px; left:20px; background:linear-gradient(135deg,#ffc1cc,#ff8fab); color:#fff; font-size:20px; }
+        .back-button:hover { transform:scale(1.12); box-shadow:0 8px 20px rgba(255,107,157,.6); }
+
+        .music-control { bottom:20px; right:20px; background:linear-gradient(135deg,#ff6b9d,#ff006e); animation:musicPulse 2s ease-in-out infinite; }
+        .music-control:hover { transform:scale(1.25); box-shadow:0 8px 25px rgba(255,107,157,.7); }
+        @keyframes musicPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+        .music-icon { font-size:24px; color:#fff; }
+
+        /* ---------- Confetti (no overflow) ---------- */
+        .confetti {
+            position:fixed; width:8px; height:8px; background:#ff6b9d;
+            animation:confettiFall 3s ease-in-out infinite; pointer-events:none;
+        }
+        .confetti:nth-child(odd){background:#ffc1cc;animation-duration:2.6s}
+        .confetti:nth-child(1){left:10%;animation-delay:0s}
+        .confetti:nth-child(2){left:22%;animation-delay:.4s}
+        .confetti:nth-child(3){left:34%;animation-delay:.8s}
+        .confetti:nth-child(4){left:46%;animation-delay:1.2s}
+        .confetti:nth-child(5){left:58%;animation-delay:.1s}
+        .confetti:nth-child(6){left:70%;animation-delay:.6s}
+        .confetti:nth-child(7){left:82%;animation-delay:1s}
+        .confetti:nth-child(8){left:94%;animation-delay:1.4s}
+        @keyframes confettiFall{
+            0%{transform:translateY(-100vh) rotate(0deg);opacity:1}
+            100%{transform:translateY(100vh) rotate(360deg);opacity:0}
+        }
+
+        /* ---------- Popup ---------- */
+        .message-popup {
+            position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
+            background:#fff; padding:28px; border-radius:20px;
+            border:3px dashed #ff6b9d; box-shadow:0 15px 35px rgba(0,0,0,.2);
+            z-index:1000; text-align:center; max-width:400px; width:90%;
+            transition:transform .3s ease;
+        }
+        .message-popup.show { transform:translate(-50%,-50%) scale(1); }
+        .popup-close { position:absolute; top:8px; right:12px; background:none; border:none; font-size:24px; cursor:pointer; color:#ff6b9d; }
+
+        /* ---------- Responsive Tweaks ---------- */
+        @media (max-width:600px){
+            .birthday-card { padding:22px 18px; }
+            .main-title { font-size:2.4em; }
+            .friend-photo-container { height:180px; }
+            .button-container { flex-direction:column; align-items:center; }
+            .birthday-button { width:78%; }
+            .back-button, .music-control { width:44px; height:44px; font-size:18px; }
+            .music-icon { font-size:20px; }
+        }
+        @media (max-width:400px){
+            .main-title { font-size:2em; }
+            .friend-photo-container { height:150px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Borders -->
+    <div class="border-decoration top"></div>
+    <div class="border-decoration bottom"></div>
+
+    <!-- Ribbons -->
+    <div class="background-ribbon ribbon-1"></div>
+    <div class="background-ribbon ribbon-2"></div>
+    <div class="background-ribbon ribbon-3"></div>
+
+    <!-- Back -->
+    <button class="back-button" onclick="goBack()" title="Back">←</button>
+
+    <!-- Confetti -->
+    <div class="confetti"></div><div class="confetti"></div><div class="confetti"></div>
+    <div class="confetti"></div><div class="confetti"></div><div class="confetti"></div>
+    <div class="confetti"></div><div class="confetti"></div>
+
+    <!-- Card -->
+    <div class="birthday-card">
+        <div class="friend-photo-container">
+            <img src="images/cake.png" alt="Friend photo" class="friend-photo">
+            <div class="photo-overlay">
+                <div class="heart-float">💕</div><div class="heart-float">💖</div>
+                <div class="heart-float">💝</div><div class="heart-float">🌸</div>
+                <div class="heart-float">✨</div>
+            </div>
+        </div>
+
+        <h1 class="main-title">Happy Birthday!</h1>
+        <p class="subtitle">To My Jaaaaaan</p>
+
+<div class="birthday-message">
+    <p>Today is all about celebrating <strong>YOU</strong> and the amazing person you are! Thank you for being my love and filling my life with so much joy, laughter, and unforgettable moments. 🎈</p>
+    <p>Your kindness, your beautiful smile, and your loving heart make every moment we spend together so special! Whether we're going on adventures or just enjoying quiet moments, you always make my world brighter! 🌟</p>
+    <p class="special-text">I hope your special day is filled with happiness, love, and everything your heart desires! Here's to many more incredible memories and adventures together! 🎂💕</p>
+    <p><strong>Wishing you the happiest birthday ever, my love!</strong> 🥰</p>
+</div>
+
+
+        <div class="button-container">
+            <button class="birthday-button" onclick="showSurprise()">🎁 Surprise Me!</button>
+            <button class="birthday-button" onclick="toggleMusic()">🎵 Play Music</button>
+        </div>
+    </div>
+
+    <!-- Music control -->
+    <div class="music-control" onclick="toggleMusic()">
+        <span class="music-icon" id="musicIcon">🎵</span>
+    </div>
+
+    <!-- Popup -->
+    <div class="message-popup" id="messagePopup">
+        <button class="popup-close" onclick="closePopup()">×</button>
+        <h2 style="color:#ff006e;margin-bottom:14px;">🎉 Special Birthday Message! 🎉</h2>
+        <p style="font-size:1.1em;color:#333;line-height:1.6;">
+            May this new year of your life bring you countless moments of joy, exciting adventures, and dreams come true! You deserve all the wonderful things life has to offer, and I'm so grateful to have you as my friend! 🎂✨💕
+        </p>
+        <div style="margin-top:18px;font-size:2em;">🎈🎁🎂🌟💝</div>
+    </div>
+
+    <script>
+        let isPlaying = false, audioCtx, isWebAudio = false;
+        const icon = document.getElementById('musicIcon');
+
+        function createTune() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [261.63,261.63,293.66,261.63,349.23,329.63,
+                           261.63,261.63,293.66,261.63,392,349.23,
+                           261.63,261.63,523.25,440,349.23,329.63,293.66,
+                           466.16,466.16,440,349.23,392,349.23];
+            const dur = 0.5;
+            let t = audioCtx.currentTime;
+            notes.forEach(f => {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.frequency.setValueAtTime(f,t);
+                o.type='sine';
+                g.gain.setValueAtTime(0,t);
+                g.gain.linearRampToValueAtTime(0.3,t+0.1);
+                g.gain.exponentialRampToValueAtTime(0.01,t+dur);
+                o.start(t); o.stop(t+dur);
+                t += dur;
+            });
+            return t - audioCtx.currentTime;
+        }
+
+        function toggleMusic() {
+            if (!isWebAudio) {
+                try { const d = createTune(); isWebAudio=true; icon.textContent='🔇';
+                    setTimeout(()=>{ if(isWebAudio) toggleMusic(); }, (d+1)*1000);
+                } catch(e){ icon.textContent='🎵'; }
+            } else {
+                isWebAudio=false; icon.textContent='🎵';
+                if(audioCtx) audioCtx.close().then(()=>{audioCtx=null;});
+            }
+        }
+
+        function showSurprise() {
+            document.getElementById('messagePopup').classList.add('show');
+            fireworks();
+        }
+        function closePopup() { document.getElementById('messagePopup').classList.remove('show'); }
+
+        function goBack() {
+            document.body.style.transition='opacity .5s ease-out';
+            document.body.style.opacity='0';
+            setTimeout(()=>{window.location.href='index.html';},500);
+        }
+
+        function fireworks() {
+            const colors=['#ff6b9d','#ffc1cc','#ff8fab','#ff006e','#ffd93d'];
+            for(let i=0;i<45;i++){
+                setTimeout(()=>{
+                    const el=document.createElement('div');
+                    el.style.cssText=`position:fixed;left:${Math.random()*window.innerWidth}px;top:${Math.random()*window.innerHeight}px;width:6px;height:6px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;pointer-events:none;z-index:999;animation:spark 1s ease-out forwards`;
+                    document.body.appendChild(el);
+                    setTimeout(()=>{el.remove();},1000);
+                },Math.random()*800);
+            }
+        }
+
+        // inject spark keyframes
+        const style=document.createElement('style');
+        style.textContent=`@keyframes spark{0%{transform:scale(0) rotate(0deg);opacity:1}50%{transform:scale(1.6) rotate(180deg);opacity:.8}100%{transform:scale(0) rotate(360deg);opacity:0}}`;
+        document.head.appendChild(style);
+
+        // auto-play on first interaction
+        document.addEventListener('click',()=>{ if(!isWebAudio && !window.musicStarted){ toggleMusic(); window.musicStarted=true; } },{once:true});
+
+        // close popup on outside click
+        document.addEventListener('click',e=>{ if(e.target.id==='messagePopup') closePopup(); });
+
+        // fade-in
+        window.addEventListener('load',()=>{ document.body.classList.add('loaded'); });
+    </script>
+</body>
+</html>
